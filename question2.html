@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Matériel et Logiciels du Banc</title>
+</head>
+<body>
+
+    <h1>Matériel et Logiciels du Banc</h1>
+
+    <h2>1. OBD CAN + USB Adapter (Interface HEX-V2 / HEX-NET)</h2>
+
+    <h3>- Fonction :</h3>
+    <p>
+        Sert de passerelle intelligente entre le réseau de bord du véhicule (CAN Haute Vitesse ou Basse Vitesse)
+        et le protocole USB d'un PC. Il ne se contente pas de relier les fils, il gère la synchronisation des messages.
+    </p>
+
+
+    <h3>- Type de communication :</h3>
+    <p>Multiprotocole (ISO 15765-4 CAN, ISO 9141-2, KWP2000). Supporte le mode "Dual CAN" pour interroger les différents réseaux de la maquette.</p>
+
+    <h3>- Données manipulées :</h3>
+    <ul>
+        <li>Requêtes de diagnostic (SID)</li>
+        <li>Lectures de mémoires mortes (ROM)</li>
+        <li>Identification matérielle/logicielle des calculateurs</li>
+        <li>Trames d'acquittement</li>
+    </ul>
+
+    <h3>- Utilisation dans le banc :</h3>
+    <p>
+        C'est l'outil "clé en main" pour le technicien. Sans lui, aucune communication avec le logiciel VCDS n'est possible
+        pour diagnostiquer les pannes injectées.
+    </p>
+    <h3>- Schéma :</h3>
+    <div style="text-align: center;">
+        <img src="OBD_CAN+USB.png" alt="Schéma du système d'éclairage" width="600">
+    </div>
+
+    <hr>
+
+    <h2>2. Logiciel VCDS (VAG-COM)</h2>
+
+    <h3>- Fonction :</h3>
+    <p>
+        Émulateur d'outil de diagnostic constructeur. Il permet de "discuter" avec chaque calculateur individuellement.
+    </p>
+
+    <h3>- Données manipulées :</h3>
+    <ul>
+        <li>DTC (Diagnostic Trouble Codes) : Ex: 01331 (Module de porte sans communication)</li>
+        <li>Groupes de mesures : Température, tension de borne 30, état binaire des boutons</li>
+        <li>Codage Long : Modification de la configuration binaire (ex: activer les feux de jour)</li>
+    </ul>
+
+    <h3>- Utilisation dans le banc :</h3>
+    <p>
+        Utilisé pour le TP "Eigendiagnose". Vérifie si le calculateur J519 détecte correctement l'appui sur une pédale ou un bouton,
+        et efface les pannes après réparation.
+    </p>
+
+    <hr>
+
+    <h2>3. Sensor-CASSY 2 (Le "Cerveau" de mesure)</h2>
+
+    <h3>- Fonction :</h3>
+    <p>
+        Système d'acquisition de données à haute vitesse, agissant comme un oscilloscope et un multimètre graphique.
+    </p>
+
+
+    <h3>- Type de communication :</h3>
+    <p>Échantillonnage analogique jusqu'à 1 MHz.</p>
+
+    <h3>- Données manipulées :</h3>
+    <p>
+        Signaux électriques bruts. On y voit la différence de tension entre CAN-High (3.5V en récessif)
+        et CAN-Low (1.5V en dominant) pour le bus propulsion.
+    </p>
+
+    <h3>- Utilisation dans le banc :</h3>
+    <p>
+        Crucial pour visualiser les pannes physiques (Pannes 8, 9, 10 : courts-circuits au + ou à la masse).
+        On voit la forme du signal se déformer ou s'aplatir à l'écran.
+    </p>
+
+    <h3>- Schéma :</h3>
+    <div style="text-align: center;">
+        <img src="Logiciel_VCDS.png" alt="Schéma du système d'éclairage" width="600">
+    </div>
+
+    <hr>
+
+    <h2>4. CAN-Databus-Multi-Adapter (Interface PEAK-CAN)</h2>
+
+    <h3>- Fonction :</h3>
+    <p>
+        Analyseur de protocole réseau pur. Contrairement au VCDS qui pose des questions, cet outil "écoute" tout ce qui se dit sur le bus sans interruption.
+    </p>
+
+    <h3>- Type de communication :</h3>
+    <p>CAN 2.0A et 2.0B.</p>
+
+    <h3>- Données manipulées :</h3>
+    <ul>
+        <li>ID (Identifiant) : Priorité du message</li>
+        <li>DLC : Nombre d'octets de données</li>
+        <li>DATA : Les 8 octets de données brutes contenant les informations d'éclairage ou de capteurs</li>
+    </ul>
+
+    <h3>- Utilisation dans le banc :</h3>
+    <p>
+        Étude de la logique binaire. Par exemple, voir l'octet 3 du message ID 531h changer de valeur passant de 00 à 01 lorsqu'on active le clignotant.
+    </p>
+
+    <h3>- Schéma :</h3>
+    <div style="text-align: center;">
+        <img src=" CAN-Databus-Multi-Adapter.png" alt="Schéma du système d'éclairage" width="600">
+    </div>
+
+    <hr>
+
+    <h2>5. LIN-Bus PC Interface USB</h2>
+
+    <h3>- Fonction :</h3>
+    <p>
+        Interface spécifique pour les réseaux secondaires (plus lents et moins chers que le CAN).
+    </p>
+
+
+
+    <h3>- Type de communication :</h3>
+    <p>
+        Maître/Esclave (Master/Slave). Sur le banc, le J393 est le maître et l'E415 (Neiman) est l'esclave.
+    </p>
+
+    <h3>- Données manipulées :</h3>
+    <p>Trame de 13 bits (Header) suivie de 1 à 8 octets de données.</p>
+
+    <h3>- Utilisation dans le banc :</h3>
+    <p>
+        Utilisé pour démontrer comment une commande simple (comme l'insertion d'une clé dans le Neiman)
+        est transmise au calculateur principal via un fil unique.
+    </p>
+
+    <h3>- Schéma :</h3>
+    <div style="text-align: center;">
+        <img src="LIN-Bus_PC_Interface_USB.png" alt="Schéma du système d'éclairage" width="600">
+    </div>
+
+</body>
+</html>
