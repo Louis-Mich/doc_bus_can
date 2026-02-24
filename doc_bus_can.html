@@ -1,56 +1,88 @@
 <!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Calculateurs VAG - Guide Technique</title>
-    <style>
-        body { font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: auto; padding: 20px; color: #333; }
-        h1 { color: #005a9c; border-bottom: 2px solid #005a9c; padding-bottom: 10px; }
-        ul { margin-bottom: 20px; }
-        li { margin-bottom: 5px; }
-    </style>
-</head>
-<body>
+<html >
+<head >
+<title > Hello World ! </title >
+</head >
+<body >
 
-    <h1>Calculateur J519 (Centrale Électrique)</h1>
-    <p>Le J519 administre tout ce qui consomme du courant hors motorisation :</p>
-    <ul>
-        <li><strong>Éclairage extérieur :</strong> feux de croisement, pleins phares, clignotants et feux de jour.</li>
-        <li><strong>Éclairage intérieur :</strong> plafonniers, éclairage des pieds et du coffre.</li>
-        <li><strong>Surveillance (Check Control) :</strong> alerte si une ampoule est grillée via la mesure de résistance.</li>
-        <li><strong>PWM (Modulation de largeur d'impulsion) :</strong> variation de l'intensité lumineuse.</li>
-        <li><strong>Confort et visibilité :</strong> gestion des essuie-glaces, lave-glace et dégivrage.</li>
-    </ul>
 
+
+ <h1 >  Calculateur J519 </h1 >
+<p> 
     
+Le J519 a pour objectif d’administrer tout ce qui consomme du courant mais qui n'est pas lié directement au moteur, notamment : 
+•	L’éclairage extérieur avec les feux de croisement, les pleins phares, les clignotants et les feux de jour 
+•	L’éclairage intérieur avec les plafonniers, et l’éclairage des pieds et du coffre.
+•	La surveillance qui envoie un message au tableau de bord si une ampoule est grillée en mesurant la résistance du circuit par exemple.
+•	La modulation de largeur d'impulsion, qui peut faire varier l'intensité des ampoules en fonction de la lumière extérieur notamment.
 
-    <h1>Calculateur J393 (Module de Confort)</h1>
-    <p>Le J393 est responsable du verrouillage et de la zone arrière du véhicule :</p>
-    <ul>
-        <li><strong>Verrouillage centralisé :</strong> portes et trappe à carburant.</li>
-        <li><strong>Accès sans clé (Kessy) :</strong> communication avec les antennes de la clé.</li>
-        <li><strong>Gestion du hayon :</strong> serrure et ouverture motorisée.</li>
-        <li><strong>Éclairage arrière :</strong> feux stop, veilleuses et clignotants arrière.</li>
-        <li><strong>Alarme antivol :</strong> capteurs volumétriques et sirène.</li>
-    </ul>
+Le calculateur J519 reçoit les ordres des commodos et active les accessoires correspondants :
+•	Aux essuie-glaces et lave-glace en modifiant les vitesses de balayage et l'intermittence.
+•	Au dégivrage en activant la lunette arrière thermique et des rétroviseurs dégivrants.
+•	Au klaxon qui interprète l'appui sur le volant.
+ </p>
 
-    <h1>Calculateur J527 (Électronique de Colonne de Direction)</h1>
-    <p>Interface entre le conducteur et le réseau CAN-Bus au niveau du volant :</p>
-    <ul>
-        <li><strong>Commandes :</strong> gestion des commodos (régulateur, clignotants).</li>
-        <li><strong>Volant multifonction :</strong> traduction des appuis touches en messages numériques.</li>
-        <li><strong>Capteur d'angle de braquage (G85) :</strong> position précise du volant pour l'ESP.</li>
-        <li><strong>Sécurité :</strong> liaison électrique pour l'airbag et le klaxon.</li>
-    </ul>
 
-    <h1>Calculateur J285 (Combiné d'Instruments)</h1>
-    <p>Véritable plaque tournante de l'information (Tableau de bord) :</p>
-    <ul>
-        <li><strong>Affichage vital :</strong> vitesse, régime moteur, température et carburant.</li>
-        <li><strong>Témoins d'alerte :</strong> ABS, Airbags, Huile (via CAN-Bus).</li>
-        <li><strong>Ordinateur de bord :</strong> consommation, autonomie et maintenance.</li>
-        <li><strong>Antidémarrage (Immo) :</strong> souvent logé ici pour autoriser le démarrage.</li>
-    </ul>
+<h1 >  Calculateur J393 </h1 >
 
-</body>
-</html>
+<p>
+
+Le J393 est le responsable du verrouillage et de la zone arrière du véhicule, il est en charge : 
+•	Du verrouillage centralisé, il s’occupe de la gestion de l'ouverture et la fermeture des portes, ainsi que la trappe à carburant.
+•	De l’accès sans clé, qui communique avec les antennes de votre clé pour autoriser l’ouverture de la porte ou démarrer sans insérer la clé.
+•	De la gestion du coffre qui commande de la serrure du hayon et l'ouverture électrique motorisée pour les véhicules qui en sont équipés.
+•	De l’éclairage arrière, qui pilote les feux stop, les veilleuses arrière et les clignotants arrière.
+•	De l’alarme qui gère les capteurs volumétriques et la sirène d'alarme d'origine.
+•	Du dégivrage et du rideau qui commande souvent le dégivrage arrière et le rideau pare-soleil électrique.
+
+
+</p>
+
+<h1 >  Calculateur J527 </h1 >
+
+<p>
+
+Le J527 est le centre de toutes les commandes qui se trouvent au niveau du volant.  Il joue donc le rôle d’interface, entre le conducteur et le réseau CAN-Bus du véhicule. Il permet de d’optimiser la gestion de : 
+	Des commodos qui comprennent, notamment les clignotants, appels de phares, le régulateur de vitesse et les essuie-glaces.
+•	Du volant multifonction qui traduit les pressions sur les boutons du volant en messages numériques.
+•	Du capteur d'angle de braquage, qui héberge ou transmet l'information sur la position précise du volant.
+•	Du klaxon et l'airbag en assurant la liaison électrique pour que l'airbag puisse se déclencher et que le klaxon fonctionne à tout moment.
+•	Du Neiman électronique qui participe à la reconnaissance de la clé et au déverrouillage de la colonne.
+
+Il est en charge nottament : de l'éclairage, de la visibilité, du confort, de la gestion de l'énergie, passerelle 
+
+
+</p>
+
+<h1 >  Calculateur J471 </h1 >
+
+
+<p>
+
+Le J471 est un calculateur beaucoup plus spécifique, il est principalement présent sur les véhicules luxueux du groupe Volkswagen mais aussi sur certains modèles de la plateforme Touareg. Il administre l'interface homme-machine du véhicule, en participant à la communication entre les doigts et les écrans de bord. Il a notamment la charge de :
+•	La centralisation des commandes en recevant les signaux des boutons de la console centrale.
+•	L’affichage en pilotant l'envoi des informations vers l'écran central ou le combiné d'instruments.
+•	La gestion du multimédia, en effet, il fait le pont entre les systèmes audio, la navigation, le téléphone et le réglage des paramètres du véhicule comme les suspensions par exemple.
+•	La passerelle d'information qui traduit les entrées utilisateur en ordres compréhensibles pour les autres réseaux CAN du véhicule.
+
+
+</p>
+
+<h1 >  Calculateur J285 </h1 >
+
+
+<p>
+
+Le J285 est un calculateur qui peut être représenté comme une plaque tournante d'informations sur le véhicule, il a notamment la charge :
+•	D’afficher des données vitales pour le véhicule comme : la vitesse, le régime moteur, température de liquide de refroidissement ou encore le niveau de carburant.
+•	De la gestion des voyants en allumant les témoins d'alerte comme l’ABS, les Airbags, l’Huile Moteur, en fonction des messages qu'il reçoit des autres calculateurs via le réseau CAN-Bus.
+•	De l’ordinateur de bord avec notamment la consommation moyenne, l’autonomie du véhicule, la température extérieure et l’indicateur de maintenance.
+•	De l’antidémarrage, sur de nombreuses générations ce dernier est installé à l’intérieur du J285. Il permet à la voiture de s’éteindre si cette dernière ne reconnait pas la clé.
+
+</p>
+
+
+
+
+</body >
+</html >
