@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Systèmes Véhicule - Description Fonctionnelle</title>
+</head>
+<body>
+
+    <h1>Systèmes Véhicule � Description Fonctionnelle</h1>
+
+    <h2>1. Systèmes d'éclairage (Lighting System I et II)</h2>
+
+    <p>
+        Le système d'éclairage est géré principalement par le
+        <strong>Calculateur de r�seau de bord (J519)</strong> et
+        l'<strong>électronique de colonne de direction (J527)</strong>.
+    </p>
+
+    <h3> - Fonction : </h3>
+    <p>
+        Commande des feux de position, de croisement, de route et des clignotants.
+    </p>
+
+    <h3>- Messages CAN :</h3>
+    <ul>
+        <li><strong>2C1h</strong> : Envoy� par le J527 toutes les 100 ms pour indiquer l'�tat des commutateurs de phares/clignotants.</li>
+        <li><strong>531h</strong> : �tat du J519 envoy� toutes les 50 ms.</li>
+        <li><strong>631h</strong> : Message d'état secondaire envoy� par le J519 (intervalle d'1 s).</li>
+    </ul>
+
+    <h3>- Interaction ECU :</h3>
+    <p>
+        Le commutateur d'�clairage (E1) informe le J519.
+        Le J519 pilote ensuite les feux en filaire ou via CAN pour les modules distants.
+    </p>
+
+    <h3>- Modes de fonctionnement :</h3>
+    <ul>
+        <li><strong>Normal</strong> : Allumage imm�diat des feux dès réception du message CAN valide.</li>
+        <li>
+            <strong>D�faut</strong> : En cas d'interruption de ligne ou court-circuit
+            (ex : Défaut F2 pour clignotant gauche), un code d'erreur est mémorisé dans le J519.
+        </li>
+        <li>
+            <strong>Correction</strong> : Effacer les codes d'erreur dans les unités 09 (Centrale �lectrique)
+            et 46 (Confort) apr�s r�paration physique.
+        </li>
+    </ul>
+
+    <h3>- Schèma d'interaction :</h3>
+
+    <svg width="900" height="260" xmlns="http://www.w3.org/2000/svg">
+
+        <!-- Bo�tes -->
+        <rect x="40" y="40" width="180" height="60" fill="none" stroke="black" />
+        <rect x="40" y="140" width="180" height="60" fill="none" stroke="black" />
+
+        <rect x="300" y="90" width="220" height="70" fill="none" stroke="black" />
+
+        <rect x="600" y="90" width="220" height="70" fill="none" stroke="black" />
+
+        <rect x="600" y="190" width="220" height="60" fill="none" stroke="black" />
+
+        <!-- Textes -->
+        <text x="130" y="75" text-anchor="middle">Contact d�marreur</text>
+        <text x="130" y="95" text-anchor="middle">D (Neiman)</text>
+
+        <text x="130" y="175" text-anchor="middle">Commande clignotants</text>
+        <text x="130" y="195" text-anchor="middle">E2</text>
+
+        <text x="410" y="120" text-anchor="middle">J527</text>
+        <text x="410" y="140" text-anchor="middle">Colonne de direction</text>
+
+        <text x="710" y="120" text-anchor="middle">J519</text>
+        <text x="710" y="140" text-anchor="middle">R�seau de bord</text>
+
+        <text x="710" y="225" text-anchor="middle">J533</text>
+        <text x="710" y="245" text-anchor="middle">Passerelle CAN / Diagnostic</text>
+
+        <!-- Fl�ches -->
+        <line x1="220" y1="70" x2="300" y2="110" stroke="black" />
+        <polygon points="300,110 292,105 292,115" fill="black" />
+
+        <line x1="220" y1="170" x2="300" y2="130" stroke="black" />
+        <polygon points="300,130 292,125 292,135" fill="black" />
+
+        <line x1="520" y1="125" x2="600" y2="125" stroke="black" />
+        <polygon points="600,125 592,120 592,130" fill="black" />
+
+        <line x1="710" y1="160" x2="710" y2="190" stroke="black" />
+        <polygon points="710,190 705,182 715,182" fill="black" />
+
+        <!-- Texte CAN -->
+        <text x="560" y="110" text-anchor="middle">CAN Confort</text>
+        <text x="560" y="125" text-anchor="middle">High / Low</text>
+
+    </svg>
+
+
+
+
+
+
+
+    <h2>2. Moteur essuie-glace :</h2>
+
+    <h3>- Fonction :</h3>
+    <p>
+        Nettoyage du pare-brise selon plusieurs vitesses et intermittence.
+    </p>
+
+    <h3>- Messages CAN :</h3>
+    <p>
+        Les commandes proviennent du J527 (commodo d'essuie-glace) vers le J519 via le bus CAN Confort.
+    </p>
+
+    <h3>- Interaction ECU :</h3>
+    <p>
+        Le J527 lit la position du levier et envoie l'information au J519,
+        qui pilote le moteur d'essuie-glace.
+    </p>
+
+    <h3>- Modes de fonctionnement :</h3>
+    <ul>
+        <li><strong>Normal</strong> : Balayage synchronisé avec la commande.</li>
+        <li>
+            <strong>D�faut</strong> : Défaut F4 (interruption de la ligne de masse).
+            Le syst�me peut se mettre en mode d�grad� (vitesse unique) ou s'arr�ter.
+        </li>
+        <li>
+            <strong>Correction</strong> : V�rification de la continuit� de la ligne de masse
+            et du câblage moteur.
+        </li>
+    </ul>
+
+    <h3>- Sch�ma d'interaction :</h3>
+
+
+    <h2>3. Interrupteur de marche arri�re :</h2>
+
+    <h3>- Fonction :</h3>
+    <p>
+        Activer les feux de recul et informer les syst�mes d'aide au stationnement.
+    </p>
+
+    <h3>- Interaction ECU :</h3>
+    <p>
+        Le signal de l'interrupteur est g�n�ralement lu par le calculateur de boite
+        ou le J519, puis diffusé sur le bus CAN.
+    </p>
+
+    <h3>- Modes de fonctionnement :</h3>
+    <ul>
+        <li><strong>Normal</strong> : Allumage des feux de recul d�s l'engagement de la marche arri�re.</li>
+        <li><strong>D�faut</strong> : Défaut F6 (interruption de la ligne positive vers la prise remorque/feux).</li>
+        <li><strong>Correction</strong> : Contrôle du fusible et de l'interrupteur sur la bo�te de vitesses.</li>
+    </ul>
+
+    <h3>- Schèma d'interaction :</h3>
+
+
+    <h2>4. Contact / Neiman (E415) :</h2>
+
+    <h3>- Fonction :</h3>
+    <p>
+        Identification de la clé et autorisation de d�marrage.
+    </p>
+
+    <h3>- Interaction ECU :</h3>
+    <p>
+        Le module E415 posséde des microcontacteurs (contact S, cl� enfonc�e)
+        lus par le Calculateur central de confort (J393).
+    </p>
+
+    <h3>- Interaction Bus :</h3>
+    <p>
+        Le J393 communique avec le J533 (Passerelle) pour transmettre l'état
+        des bornes (15, 50, X) aux autres calculateurs via les bus CAN Propulsion
+        et Confort.
+    </p>
+
+    <h3>- Modes de fonctionnement :</h3>
+    <ul>
+        <li>
+            <strong>Normal</strong> : Déverrouillage électrique de la colonne de direction (J764)
+            apr�s lecture de la puce de la cl� via une bobine LIN.
+        </li>
+        <li>
+            <strong>Défaut</strong> : Bobine de lecture (01128) d�fectueuse ou défaut de communication
+            avec le J393.
+        </li>
+        <li>
+            <strong>Correction</strong> : Diagnostic via le bloc de valeurs mesur�es
+            et v�rification du bus LIN entre E415 et J393.
+        </li>
+    </ul>
+
+    <h3>- Schèma d'interaction :</h3>
+
+
+    <h2>5. Feux de d�tresse :</h2>
+
+    <h3>- Fonction :</h3>
+    <p>
+        Signalisation d'urgence par clignotement simultan�
+        de tous les indicateurs de direction.
+    </p>
+
+    <h3>- Interaction ECU :</h3>
+    <p>
+        L'interrupteur de feux de d�tresse est reli� directement au J519.
+        Le J519 commande ensuite les clignotants et envoie un message sur le bus CAN
+        pour confirmer l'�tat au combin� d'instruments (J285).
+    </p>
+
+    <h3>- Modes de fonctionnement :</h3>
+    <ul>
+        <li><strong>Normal</strong> : Clignotement prioritaire sur les autres fonctions d'�clairage.</li>
+        <li>
+            <strong>D�faut</strong> : Si le bus CAN Confort est défaillant,
+            les feux de d�tresse peuvent rester op�rationnels en mode secours local via le J519.
+        </li>
+        <li>
+            <strong>Correction</strong> : Remplacement de l'interrupteur
+            ou vérification du c�blage vers le J519.
+        </li>
+    </ul>
+
+    <h3>- Schèma d'interaction :</h3>
+    <img src="CAR.jpg" alt="Sch�ma du syst�me d'�clairage" width="400">
+</body>
+</html>
