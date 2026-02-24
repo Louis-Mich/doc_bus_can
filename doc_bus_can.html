@@ -8,59 +8,67 @@
 <h1 > Hello world ! </h1 >
 
 
-<p> Le J519, aussi appelé BCM (Body Control Module) ou Centrale Électrique, est l'un des calculateurs les plus importants dans les véhicules du groupe Volkswagen (VW, Audi, Seat, Škoda).
+<p> 
+    
+Le J519 a pour objectif d’administrer tout ce qui consomme du courant mais qui n'est pas lié directement au moteur, notamment : 
+•	L’éclairage extérieur avec les feux de croisement, les pleins phares, les clignotants et les feux de jour 
+•	L’éclairage intérieur avec les plafonniers, et l’éclairage des pieds et du coffre.
+•	La surveillance qui envoie un message au tableau de bord si une ampoule est grillée en mesurant la résistance du circuit par exemple.
+•	La modulation de largeur d'impulsion, qui peut faire varier l'intensité des ampoules en fonction de la lumière extérieur notamment.
 
-C'est littéralement le "cerveau" qui gère tout ce qui touche à l'habitacle et à l'électricité de carrosserie. </p>
-
-<p>
-1. Ses fonctions principales
-Le J393 est le maître du verrouillage et de la zone arrière du véhicule :
-•	Verrouillage Centralisé : Il gère l'ouverture et la fermeture des portes, ainsi que la trappe à carburant.
-•	Accès Sans Clé (Keyless Go) : C’est lui qui communique avec les antennes de votre clé pour vous autoriser à ouvrir la porte ou démarrer sans insérer la clé.
-•	Gestion du Coffre : Commande de la serrure du hayon et, sur les modèles équipés, l'ouverture électrique motorisée.
-•	Éclairage Arrière : C'est lui qui pilote les feux stop, les veilleuses arrières et les clignotants arrières (sur beaucoup de modèles Audi).
-•	Alarme : Il gère les capteurs volumétriques et la sirène d'alarme d'origine.
-•	Dégivrage & Rideau : Il commande souvent le dégivrage arrière et le rideau pare-soleil électrique.
-
-
-</p>
-
-
-<p> Il est en charge nottament : de l'éclairage, de la visibilité, du confort, de la gestion de l'énergie, passerelle 
-    Le calculateur J519 se trouver généralement côté conducteur au niveau du tableau de bord 
-
-
-    Le J527 est le centre névralgique de toutes les commandes qui se trouvent autour de votre volant : 
-Le J527 sert d'interface entre le conducteur et le réseau CAN-Bus du véhicule. Il gère :
-•	Les Commodos : Clignotants, appels de phares, régulateur de vitesse (CCS) et essuie-glaces.
-•	Le Volant Multifonction : Il traduit les pressions sur les boutons du volant (volume, changement de radio, commande vocale) en messages numériques.
-•	Le Capteur d'Angle de Braquage (G85) : C'est souvent lui qui héberge ou transmet l'information sur la position précise du volant, une donnée vitale pour l'ESP (correcteur de trajectoire).
-•	Le Klaxon et l'Airbag : Il assure la liaison électrique (via la bague collectrice) pour que l'airbag puisse se déclencher et que le klaxon fonctionne, même quand vous tournez le volant.
-•	Le Neiman électronique : Sur certains modèles, il participe à la reconnaissance de la clé et au déverrouillage de la colonne.
-
-</p>
+Le calculateur J519 reçoit les ordres des commodos et active les accessoires correspondants :
+•	Aux essuie-glaces et lave-glace en modifiant les vitesses de balayage et l'intermittence.
+•	Au dégivrage en activant la lunette arrière thermique et des rétroviseurs dégivrants.
+•	Au klaxon qui interprète l'appui sur le volant.
+ </p>
 
 <p>
-J471 : 
-Le J471 est un calculateur beaucoup plus spécifique et "haut de gamme" que les J519 ou J527. Son nom officiel est Calculateur d'unité d'affichage et de commande (Control Module for Display and Operating Unit).
-Il est principalement présent sur les véhicules luxueux du groupe Volkswagen (comme la VW Phaeton ou l'Audi A8) ainsi que sur certains modèles de la plateforme Touareg.
-1. Quel est son rôle ?
-Le J471 fait office de chef d'orchestre pour l'interface homme-machine (IHM). C'est lui qui gère la communication entre vos doigts et les écrans de bord.
-•	Centralisation des commandes : Il reçoit les signaux des boutons de la console centrale (pavé numérique, molette MMI, boutons de raccourcis).
-•	Affichage : Il pilote l'envoi des informations vers l'écran central ou le combiné d'instruments.
-•	Gestion du Multimédia : Il fait le pont entre les systèmes audio, la navigation, le téléphone et le réglage des paramètres du véhicule (suspension pneumatique, climatisation avancée).
-•	Passerelle d'information : Sur les modèles équipés, il traduit les entrées utilisateur en ordres compréhensibles pour les autres réseaux CAN du véhicule.
+
+Le J393 est le responsable du verrouillage et de la zone arrière du véhicule, il est en charge : 
+•	Du verrouillage centralisé, il s’occupe de la gestion de l'ouverture et la fermeture des portes, ainsi que la trappe à carburant.
+•	De l’accès sans clé, qui communique avec les antennes de votre clé pour autoriser l’ouverture de la porte ou démarrer sans insérer la clé.
+•	De la gestion du coffre qui commande de la serrure du hayon et l'ouverture électrique motorisée pour les véhicules qui en sont équipés.
+•	De l’éclairage arrière, qui pilote les feux stop, les veilleuses arrière et les clignotants arrière.
+•	De l’alarme qui gère les capteurs volumétriques et la sirène d'alarme d'origine.
+•	Du dégivrage et du rideau qui commande souvent le dégivrage arrière et le rideau pare-soleil électrique.
+
 
 </p>
 
 
 <p>
 
-Le J285 ne se contente pas d'afficher la vitesse ; c'est une plaque tournante d'informations :
-•	Affichage des données vitales : Vitesse (tachymètre), régime moteur, température de liquide de refroidissement et niveau de carburant.
-•	Gestion des voyants : Il allume les témoins d'alerte (ABS, Airbag, Huile, Moteur) en fonction des messages qu'il reçoit des autres calculateurs via le réseau CAN-Bus.
-•	Ordinateur de bord : Consommation moyenne, autonomie, température extérieure et indicateur de maintenance (service vidange).
-•	Antidémarrage (Immobilizer) : Sur beaucoup de générations (VW Golf 4, 5, 6, etc.), le cerveau de l'antidémarrage est logé à l'intérieur du J285. Si le combiné ne reconnaît pas la clé, la voiture démarre et s'éteint au bout de 2 secondes.
+Le J527 est le centre de toutes les commandes qui se trouvent au niveau du volant.  Il joue donc le rôle d’interface, entre le conducteur et le réseau CAN-Bus du véhicule. Il permet de d’optimiser la gestion de : 
+	Des commodos qui comprennent, notamment les clignotants, appels de phares, le régulateur de vitesse et les essuie-glaces.
+•	Du volant multifonction qui traduit les pressions sur les boutons du volant en messages numériques.
+•	Du capteur d'angle de braquage, qui héberge ou transmet l'information sur la position précise du volant.
+•	Du klaxon et l'airbag en assurant la liaison électrique pour que l'airbag puisse se déclencher et que le klaxon fonctionne à tout moment.
+•	Du Neiman électronique qui participe à la reconnaissance de la clé et au déverrouillage de la colonne.
+
+Il est en charge nottament : de l'éclairage, de la visibilité, du confort, de la gestion de l'énergie, passerelle 
+
+
+</p>
+
+<p>
+
+Le J471 est un calculateur beaucoup plus spécifique, il est principalement présent sur les véhicules luxueux du groupe Volkswagen mais aussi sur certains modèles de la plateforme Touareg. Il administre l'interface homme-machine du véhicule, en participant à la communication entre les doigts et les écrans de bord. Il a notamment la charge de :
+•	La centralisation des commandes en recevant les signaux des boutons de la console centrale.
+•	L’affichage en pilotant l'envoi des informations vers l'écran central ou le combiné d'instruments.
+•	La gestion du multimédia, en effet, il fait le pont entre les systèmes audio, la navigation, le téléphone et le réglage des paramètres du véhicule comme les suspensions par exemple.
+•	La passerelle d'information qui traduit les entrées utilisateur en ordres compréhensibles pour les autres réseaux CAN du véhicule.
+
+
+</p>
+
+
+<p>
+
+Le J285 est un calculateur qui peut être représenté comme une plaque tournante d'informations sur le véhicule, il a notamment la charge :
+•	D’afficher des données vitales pour le véhicule comme : la vitesse, le régime moteur, température de liquide de refroidissement ou encore le niveau de carburant.
+•	De la gestion des voyants en allumant les témoins d'alerte comme l’ABS, les Airbags, l’Huile Moteur, en fonction des messages qu'il reçoit des autres calculateurs via le réseau CAN-Bus.
+•	De l’ordinateur de bord avec notamment la consommation moyenne, l’autonomie du véhicule, la température extérieure et l’indicateur de maintenance.
+•	De l’antidémarrage, sur de nombreuses générations ce dernier est installé à l’intérieur du J285. Il permet à la voiture de s’éteindre si cette dernière ne reconnait pas la clé.
 
 </p>
 
