@@ -543,5 +543,613 @@ Le J285 est un calculateur qui peut être représenté comme une plaque tournant
         <img src="feux_detresse.png" alt="Schéma du système d'éclairage" width="600">
     </div>
 
+
+	<title>Documentation Bus CAN - Audi A3 - Sections 6, 7, 8</title>
+</head>
+<body>
+
+<h1>Documentation Technique - Banc Leybold Audi A3</h1>
+<p><strong>UFR Sciences et Technologies - Université Évry Paris-Saclay</strong><br>
+Cours : Culture Métiers - L. NEHAOUA - 2025-2026<br></p>
+
+<hr>
+
+<h2>Section 6 - Diagnostic Automatique : Scan Réseau, Lecture de Défauts et Analyse Technique</h2>
+
+<h3>6.1 Contexte et Méthodologie</h3>
+
+<p>Le diagnostic a été réalisé sur le banc Leybold reproduisant le réseau habitacle d'une Audi A3 de 2007.
+La capture CAN a été effectuée avec l'outil PCAN-View et sauvegardée au format .trc, puis en fichier .txt pour réussir a décoder les trames. 
+Le fichier analysé (Test4) a étét enregistré le 24/02/2026.
+L'analyse des trames a été réalisée par un script Python utilisant les bibliothèques
+<code>pandas</code>, <code>struct</code> et <code>matplotlib</code>.</p>
+
+<h3>6.2 Scan du Réseau CAN - Inventaire des Calculateurs</h3>
+
+<p>L'analyse de la capture révèle les identifiants CAN suivants actifs sur le bus :</p>
+
+<table border="1" cellpadding="5" cellspacing="0">
+<tr>
+<th>ID CAN (hex)</th>
+<th>Occurrences</th>
+<th>Calculateur probable</th>
+<th>Période (ms)</th>
+</tr>
+<tr>
+<td>0x00C2</td>
+<td>13 973</td>
+<td>ECU Moteur</td>
+<td>~10</td>
+</tr>
+<tr>
+<td>0x0320</td>
+<td>6 990</td>
+<td>Calculateur ABS/ESP</td>
+<td>~20</td>
+</tr>
+<tr>
+<td>0x05A0</td>
+<td>6 987</td>
+<td>Module Volant / Colonne de Direction</td>
+<td>~20</td>
+</tr>
+<tr>
+<td>0x0050</td>
+<td>6 987</td>
+<td>Tableau de Bord (Instrument Cluster)</td>
+<td>~20</td>
+</tr>
+<tr>
+<td>0x04A8</td>
+<td>6 986</td>
+<td>Boîte de Vitesses Automatique</td>
+<td>~20</td>
+</tr>
+<tr>
+<td>0x04A0</td>
+<td>6 986</td>
+<td>Transmission / Différentiel</td>
+<td>~20</td>
+</tr>
+<tr>
+<td>0x01A0</td>
+<td>6 986</td>
+<td>Module ABS - Capteur Pédale Frein</td>
+<td>~20</td>
+</tr>
+<tr>
+<td>0x05D0</td>
+<td>1 398</td>
+<td>Module Climatisation / Confort</td>
+<td>~100</td>
+</tr>
+<tr>
+<td>0x0390</td>
+<td>1 398</td>
+<td>BCM - Body Control Module (J519)</td>
+<td>~100</td>
+</tr>
+<tr>
+<td>0x0572</td>
+<td>1 395</td>
+<td>Gateway / Passerelle réseau</td>
+<td>~100</td>
+</tr>
+<tr>
+<td>0x0550</td>
+<td>699</td>
+<td>Module Portes</td>
+<td>~200</td>
+</tr>
+<tr>
+<td>0x0520</td>
+<td>699</td>
+<td>Module Portes Arrière</td>
+<td>~200</td>
+</tr>
+<tr>
+<td>0x0420</td>
+<td>699</td>
+<td>Module Sièges / Confort</td>
+<td>~200</td>
+</tr>
+<tr>
+<td>0x05F2</td>
+<td>279</td>
+<td>Module Diagnostic</td>
+<td>~500</td>
+</tr>
+<tr>
+<td>0x05D2</td>
+<td>140</td>
+<td>Module Antivol / Immobiliseur</td>
+<td>~1000</td>
+</tr>
+</table>
+
+<p><strong>Observation :</strong> Tous les calculateurs émettent des trames de type <code>DT</code> (Data).
+Aucune trame de type <code>ER</code>, <code>EC</code> ou <code>ST</code> n'est présente dans ce fichier,
+ce qui signifie que les erreurs matérielles ne sont pas remontées explicitement par PCAN-View
+dans cette configuration. Les défauts sont donc identifiés par analyse comportementale
+(silences, transitions anormales) et non par codes d'erreur directement.</p>
+
+<h3>6.3 Identification et Analyse des Défauts Détectés</h3>
+
+<h4>6.3.1 Défaut type 1 : Instabilité d'alimentation - Tic de relais (problème batterie)</h4>
+
+<p>Les zones de forte densité de trames visibles sur les graphiques (zones rouges) ne correspondent
+pas à une rupture du bus CAN, mais à un <strong>défaut d'alimentation du véhicule</strong>.
+Le phénomène observé est un <strong>tic de relais</strong> : la batterie du banc étant en état
+limite de charge, le relais principal tente de se réenclencher de façon répétitive.
+Chaque tentative de réalimentation provoque une micro-coupure puis un redémarrage immédiat
+des calculateurs, générant une rafale dense de trames sur le bus CAN.</p>
+
+<p><strong>Comportement observé :</strong> Sur les graphiques générés (voir Section 7), les zones
+colorées en rouge représentent ces périodes d'instabilité. Deux événements distincts sont
+identifiables :</p>
+
+<ul>
+<li><strong>Événement 1</strong> : vers ~50 000 ms - série de tics de relais rapprochés.
+Le bus se comporte de manière chaotique : les calculateurs redémarrent en boucle,
+générant une densité anormalement élevée de trames. Le BCM (0x0390) reprend son
+émission à chaque cycle de redémarrage.</li>
+<li><strong>Événement 2</strong> : vers ~102 000 ms - second épisode similaire, plus bref,
+probablement lié à une nouvelle chute de tension de la batterie.</li>
+</ul>
+
+<p><strong>Cause identifiée :</strong> Alimentation par le générateur du banc causant un disfocntionnement 12V simulée. Le relais principal oscille entre ouvert et fermé, coupant et rétablissant
+l'alimentation des calculateurs de manière répétée.</p>
+
+<p><strong>Comportement réseau :</strong> À chaque micro-coupure, tous les calculateurs perdent leur
+alimentation simultanément. Au rétablissement, ils exécutent leur séquence d'initialisation
+et reprennent leur émission CAN. Ce phénomène est visible comme une "salve" de trames
+dans PCAN-View : tous les ECU émettent leurs trames de démarrage en même temps,
+créant une congestion momentanée du bus.</p>
+
+<p><strong>Correction :</strong> Remplacer le générateur du banc par une version plus robuste. Vérifier la tension
+d'alimentation avec un multimètre avant toute capture : elle doit être stable entre
+12,0 V et 12,6 V. Un condensateur de filtrage peut également être ajouté sur
+l'alimentation pour amortir les chutes de tension transitoires.</p>
+
+<h4>6.3.2 Défaut type 2 : Comportement anormal des Feux Stop (BCM)</h4>
+
+<p>L'analyse comparée de la trame 0x0390 (BCM, output feux stop) et de la trame 0x01A0
+(ABS, capteur pédale physique) révèle une incohérence :</p>
+
+<ul>
+<li>Les feux stop (bit 6 de l'octet 4 de la trame 0x0390) sont signalés allumés
+dès le début de la capture, puis restent actifs.</li>
+<li>Le capteur pédale frein (trame 0x01A0) reste à l'état "Relâché" en permanence.</li>
+</ul>
+
+<p><strong>Analyse technique :</strong> Ce comportement peut avoir deux origines :</p>
+
+<ol>
+<li>Le masque de décodage utilisé (<code>0x40</code> sur l'octet 4) est partiellement
+incorrect pour cette version du BCM (J519) installé sur le banc Leybold.
+La valeur <code>0x40</code> observée dès la trame initiale (<code>10 00 00 00 00 00 00</code>)
+correspond au bit 6 du premier octet, non de l'octet 4.</li>
+<li>Il peut s'agir d'un état de démarrage par défaut du BCM qui signale "feux stop actifs"
+tant que l'initialisation complète du réseau n'est pas terminée.</li>
+</ol>
+
+<p><strong>Valeurs observées dans la capture Test4 - trame 0x0390 (début) :</strong></p>
+<pre>
+Temps (ms)  | Octet 0 | Octet 1 | Octet 2 | Octet 3 | Octet 4 | Octet 5 | Octet 6
+------------|---------|---------|---------|---------|---------|---------|--------
+10.986      |  10     |  00     |  00     |  00     |  00     |  00     |  00
+64606.628   |  10     |  00     |  00     |  00     |  00     |  00     |  04    <- Veilleuses ON
+109504.649  |  10     |  00     |  00     |  00     |  08     |  00     |  00    <- Cligno Droit
+112204.440  |  10     |  00     |  00     |  00     |  04     |  00     |  00    <- Cligno Gauche
+114904.179  |  10     |  00     |  00     |  00     |  44     |  00     |  00    <- Feux Stop + Cligno G
+115504.315  |  10     |  00     |  00     |  00     |  40     |  00     |  00    <- Feux Stop seuls
+</pre>
+
+<h4>6.3.3 Résumé des défauts et actions correctives</h4>
+
+<table border="1" cellpadding="5" cellspacing="0">
+<tr>
+<th>Défaut</th>
+<th>Cause</th>
+<th>Comportement observé</th>
+<th>Correction</th>
+</tr>
+<tr>
+<td>Tic de relais (batterie faible)</td>
+<td>Alimentation 12V instable</td>
+<td>Rafales de trames denses, redémarrages calculateurs répétés</td>
+<td>Remplacer la batterie, vérifier tension 12V</td>
+</tr>
+<tr>
+<td>ECU absent (simulé)</td>
+<td>Retrait d'un calculateur</td>
+<td>Absence des trames de l'ECU concerné</td>
+<td>Reprise à la reconnexion de l'ECU</td>
+</tr>
+<tr>
+<td>Incohérence pédale/stop</td>
+<td>État initial BCM ou décodage</td>
+<td>Feux stop ON sans appui pédale</td>
+<td>Vérifier masque 0x40 sur octet 0</td>
+</tr>
+</table>
+
+<hr>
+
+<h2>Section 7 - Étude Fonctionnelle de l'Éclairage - Analyse des Trames CAN</h2>
+
+<h3>7.1 Présentation de l'Architecture d'Éclairage</h3>
+
+<p>Sur le banc Leybold (Audi A3), le système d'éclairage est géré centralement par le
+<strong>BCM (Body Control Module, calculateur J519)</strong>.
+Ce calculateur reçoit les commandes (interrupteurs, pédale) et pilote les actionneurs (ampoules).
+Toutes les informations d'état de l'éclairage sont diffusées sur le bus CAN via
+la trame <strong>0x0390</strong> avec une période d'environ 100 ms.</p>
+
+<p>Structure de décodage de la trame 0x0390 (DLC = 8 octets) :</p>
+
+<table border="1" cellpadding="5" cellspacing="0">
+<tr>
+<th>Octet</th>
+<th>Bit(s)</th>
+<th>Signal</th>
+<th>Valeur 0</th>
+<th>Valeur 1</th>
+</tr>
+<tr>
+<td>4</td>
+<td>bit 2 (0x04)</td>
+<td>Clignotant Gauche</td>
+<td>Éteint</td>
+<td>Allumé</td>
+</tr>
+<tr>
+<td>4</td>
+<td>bit 3 (0x08)</td>
+<td>Clignotant Droit</td>
+<td>Éteint</td>
+<td>Allumé</td>
+</tr>
+<tr>
+<td>4</td>
+<td>bits 2+3 (0x0C)</td>
+<td>Warning (Feux de Détresse)</td>
+<td>Éteint</td>
+<td>Allumé (les deux clignotants)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>bit 6 (0x40)</td>
+<td>Feux Stop (Output BCM)</td>
+<td>Éteint</td>
+<td>Allumé</td>
+</tr>
+<tr>
+<td>3</td>
+<td>bit 4 (0x10)</td>
+<td>Feu de Recul (Marche Arrière)</td>
+<td>Éteint</td>
+<td>Allumé</td>
+</tr>
+<tr>
+<td>6</td>
+<td>bits 4+5 (0x30) / bit 2 (0x04)</td>
+<td>Veilleuses / Feux de Croisement</td>
+<td>Éteint</td>
+<td>Allumé</td>
+</tr>
+<tr>
+<td>6</td>
+<td>bits 0+2 (0x05) / bit 1 (0x02)</td>
+<td>Antibrouillards</td>
+<td>Éteint</td>
+<td>Allumé</td>
+</tr>
+</table>
+
+<h3>7.2 Feux Arrière et Feux Stop</h3>
+
+<p>Les feux stop sont commandés par le BCM (J519) en réponse au signal de pédale de frein
+reçu du module ABS via la trame <strong>0x01A0</strong> (bit 3 de l'octet 1).</p>
+
+<p><strong>Séquence de fonctionnement normale :</strong></p>
+<ol>
+<li>Le conducteur appuie sur la pédale de frein.</li>
+<li>Le capteur pédale envoie le signal à l'ABS via la trame 0x01A0 (bit <code>Pedale_Frein</code> = 1).</li>
+<li>Le BCM (J519) lit ce signal sur le bus et active les ampoules des feux stop.</li>
+<li>La trame 0x0390 reflète l'état allumé (bit 6 de l'octet 4 = 1).</li>
+</ol>
+
+<p><strong>Trame normale (feux stop éteints) :</strong></p>
+<pre>0x0390 : 10 00 00 00 00 00 00 00   (octet 4 = 0x00)</pre>
+
+<p><strong>Trame avec feux stop allumés :</strong></p>
+<pre>0x0390 : 10 00 00 00 40 00 00 00   (octet 4 = 0x40, bit 6 = 1)</pre>
+
+<p><strong>Trame en défaut (incohérence détectée dans Test4) :</strong></p>
+<pre>0x0390 : 10 00 00 00 40 00 00 00   dès t=0ms, sans appui pédale détecté par ABS
+-> Le capteur pédale (0x01A0) reste à 0 tout au long de la capture.
+-> Cause probable : état initial BCM ou décalage de l'octet de référence.</pre>
+
+<p>Voir graphique : <strong>graph_04_freinage_comparatif.png</strong></p>
+<img src="graph_04_freinage_comparatif.png" alt="Comparaison Pédale Physique vs Feux Stop BCM" width="800">
+
+<h3>7.3 Clignotants</h3>
+
+<p>Les clignotants gauche et droit sont codés dans l'octet 4 de la trame 0x0390.
+Le clignotant droit correspond au bit 3 (masque 0x08), le gauche au bit 2 (masque 0x04).
+Lorsque les deux bits sont actifs simultanément (0x0C), le BCM interprète cela comme
+une activation des feux de détresse (Warning).</p>
+
+<p><strong>Timeline observée dans Test4 :</strong></p>
+<ul>
+<li><strong>t = 109 504 ms</strong> : Clignotant Droit activé (octet 4 = 0x08)</li>
+<li><strong>t = 111 404 ms</strong> : Clignotant Droit désactivé (octet 4 = 0x00) - durée : ~1 900 ms</li>
+<li><strong>t = 112 204 ms</strong> : Clignotant Gauche activé (octet 4 = 0x04)</li>
+<li><strong>t = 114 904 ms</strong> : Feux Stop + Clignotant Gauche (octet 4 = 0x44)</li>
+<li><strong>t = 115 504 ms</strong> : Feux Stop seuls (octet 4 = 0x40)</li>
+</ul>
+
+<p><strong>Trame normale clignotant droit :</strong></p>
+<pre>0x0390 : 10 00 00 00 08 00 00 00   (octet 4 = 0x08)</pre>
+
+<p><strong>Trame normale clignotant gauche :</strong></p>
+<pre>0x0390 : 10 00 00 00 04 00 00 00   (octet 4 = 0x04)</pre>
+
+<p><strong>Trame Warning (feux de détresse) :</strong></p>
+<pre>0x0390 : 10 00 00 00 0C 00 00 00   (octet 4 = 0x0C, bits 2 et 3 = 1)</pre>
+
+<p>Voir graphique : <strong>graph_02_direction.png</strong></p>
+<img src="graph_02_direction.png" alt="Signaux de Direction et Warning" width="800">
+
+<h3>7.4 Veilleuses et Feux de Croisement</h3>
+
+<p>L'éclairage avant (veilleuses et feux de croisement) est codé dans l'octet 6 de la trame 0x0390.
+Le bit 2 (masque 0x04) indique l'activation des veilleuses ou feux de croisement.</p>
+
+<p><strong>Timeline observée dans Test4 :</strong></p>
+<ul>
+<li><strong>t = 0 à 64 606 ms</strong> : Éclairage OFF (octet 6 = 0x00)</li>
+<li><strong>t = 64 606 ms</strong> : Veilleuses/Croisement ON (octet 6 = 0x04)</li>
+<li><strong>t = 69 806 ms</strong> : Éclairage OFF (octet 6 = 0x00)</li>
+<li><strong>t = 97 605 ms</strong> : Veilleuses/Croisement ON à nouveau (octet 6 = 0x04)</li>
+<li><strong>t = 100 005 ms</strong> : Éclairage OFF</li>
+<li><strong>t = 104 804 ms</strong> : Veilleuses/Croisement ON</li>
+<li><strong>t = 107 804 ms</strong> : Éclairage OFF</li>
+</ul>
+
+<p><strong>Trame normale veilleuses activées :</strong></p>
+<pre>0x0390 : 10 00 00 00 00 00 04 00   (octet 6 = 0x04)</pre>
+
+<p><strong>Trame éclairage éteint :</strong></p>
+<pre>0x0390 : 10 00 00 00 00 00 00 00   (octet 6 = 0x00)</pre>
+
+<p>Voir graphique : <strong>graph_01_eclairage_principal.png</strong></p>
+<img src="graph_01_eclairage_principal.png" alt="Éclairage Principal - Veilleuses et Antibrouillards" width="800">
+
+<h3>7.5 Antibrouillards</h3>
+
+<p>Les antibrouillards sont également codés dans l'octet 6 de la trame 0x0390.
+Le bit 1 (masque 0x02) correspond aux antibrouillards arrière, et les bits 0+2 (masque 0x05)
+aux antibrouillards avant. Une valeur de 0x06 indique l'activation simultanée des
+veilleuses et antibrouillards.</p>
+
+<p><strong>Séquences de clignotement observées (t = 67 100 à 69 800 ms) :</strong>
+Le BCM alterne entre 0x04 (veilleuses seules) et 0x06 (veilleuses + antibrouillards)
+environ toutes les 200 ms, ce qui correspond à la fréquence de clignotement standard
+d'un feu antibrouillard en mode pulsé lors de l'activation.</p>
+
+<p><strong>Trame antibrouillard seul :</strong></p>
+<pre>0x0390 : 10 00 00 00 00 00 02 00   (octet 6 = 0x02)</pre>
+
+<p><strong>Trame veilleuses + antibrouillard :</strong></p>
+<pre>0x0390 : 10 00 00 00 00 00 06 00   (octet 6 = 0x06)</pre>
+
+<h3>7.6 Feu de Recul (Marche Arrière)</h3>
+
+<p>Le feu de recul est codé dans l'octet 3 de la trame 0x0390 (bit 4, masque 0x10).
+Il s'active lorsque la boîte de vitesses passe en position "R" (Reverse).
+L'information de position de la boîte est transmise via la trame <strong>0x04A8</strong>
+et le BCM (J519) active en conséquence le feu de recul.</p>
+
+<p><strong>Trame normale (marche avant ou point mort) :</strong></p>
+<pre>0x0390 : 10 00 00 00 00 00 00 00   (octet 3 = 0x00)</pre>
+
+<p><strong>Trame marche arrière engagée :</strong></p>
+<pre>0x0390 : 10 00 00 10 00 00 00 00   (octet 3 = 0x10, bit 4 = 1)</pre>
+
+<p><strong>Note :</strong> Dans la capture Test4, aucune activation du feu de recul n'a été
+détectée (octet 3 reste à 0x00 sur toute la durée). L'événement visible sur le graphique 3
+correspond à la capture Test4 (fichier séparé).Cela est du au faites que nous n'avons pas </p>
+accès au controle de commande de la boite de vitesse , ce qui nous empeche de passer en mode Reverse.</p>
+
+<p>Voir graphique : <strong>graph_03_marche_arriere.png</strong></p>
+<img src="graph_03_marche_arriere.png" alt="Engagement Marche Arrière" width="800">
+
+<h3>7.7 Synthèse des Trames - Tableau Récapitulatif</h3>
+
+<table border="1" cellpadding="5" cellspacing="0">
+<tr>
+<th>Fonction</th>
+<th>ID CAN</th>
+<th>Octet</th>
+<th>Masque</th>
+<th>Trame type ON</th>
+<th>Observé dans Test4</th>
+</tr>
+<tr>
+<td>Veilleuses / Croisement</td>
+<td>0x0390</td>
+<td>6</td>
+<td>0x04</td>
+<td>...04 00</td>
+<td>Oui - t=64 606ms</td>
+</tr>
+<tr>
+<td>Antibrouillards</td>
+<td>0x0390</td>
+<td>6</td>
+<td>0x02 / 0x05</td>
+<td>...02 00 / ...06 00</td>
+<td>Oui - t=70 006ms</td>
+</tr>
+<tr>
+<td>Clignotant Gauche</td>
+<td>0x0390</td>
+<td>4</td>
+<td>0x04</td>
+<td>...04... 00 00</td>
+<td>Oui - t=112 204ms</td>
+</tr>
+<tr>
+<td>Clignotant Droit</td>
+<td>0x0390</td>
+<td>4</td>
+<td>0x08</td>
+<td>...08... 00 00</td>
+<td>Oui - t=109 504ms</td>
+</tr>
+<tr>
+<td>Warning (Détresse)</td>
+<td>0x0390</td>
+<td>4</td>
+<td>0x0C</td>
+<td>...0C... 00 00</td>
+<td>Non détecté dans Test4</td>
+</tr>
+<tr>
+<td>Feux Stop</td>
+<td>0x0390</td>
+<td>4</td>
+<td>0x40</td>
+<td>...40... 00 00</td>
+<td>Oui - t=115 504ms</td>
+</tr>
+<tr>
+<td>Feu de Recul</td>
+<td>0x0390</td>
+<td>3</td>
+<td>0x10</td>
+<td>...10 00... 00 00</td>
+<td>Non (voir Test4)</td>
+</tr>
+<tr>
+<td>Pédale Frein (physique)</td>
+<td>0x01A0</td>
+<td>1</td>
+<td>0x08</td>
+<td>octet1 bit3 = 1</td>
+<td>Non détecté</td>
+</tr>
+</table>
+
+<hr>
+
+<h2>Section 8 - Procédure d'Exploitation du Banc</h2>
+
+<h3>8.1 Mise sous Tension et Alimentation</h3>
+
+<ol>
+<li>Vérifier que tous les câbles CAN et LIN sont correctement connectés sur le banc.</li>
+<li>Vérifier l'absence de court-circuit visible sur les bornes d'alimentation.</li>
+<li>Mettre sous tension le banc Leybold via l'interrupteur général.</li>
+<li>Vérifier que le voyant d'alimentation s'allume sur le panneau.</li>
+<li>Attendre 3 à 5 secondes que les calculateurs s'initialisent (séquence de démarrage).</li>
+<li>Vérifier l'absence d'alarmes ou de voyants d'erreur sur le tableau de bord simulé.</li>
+</ol>
+
+<p><strong>Tension nominale :</strong> 12V DC (alimentation batterie simulée).
+<strong>Courant de repos :</strong> à vérifier selon la charge connectée.</p>
+
+<h3>8.2 Initialisation du Réseau CAN</h3>
+
+<ol>
+<li>Après la mise sous tension, le réseau CAN s'initialise automatiquement.</li>
+<li>Vérifier la présence des calculateurs attendus via l'outil de diagnostic (VCDS ou PCAN-View).</li>
+<li>Si un calculateur est absent de la liste, vérifier sa connexion physique au bus.</li>
+<li>Contrôler les niveaux des signaux CAN-H et CAN-L sur l'oscilloscope :
+    <ul>
+        <li>CAN-H nominal : 2,5V (repos) - 3,5V (dominant)</li>
+        <li>CAN-L nominal : 2,5V (repos) - 1,5V (dominant)</li>
+        <li>Signal différentiel : 0V (récessif) - 2V (dominant)</li>
+    </ul>
+</li>
+<li>Vérifier la résistance de terminaison CAN : 120 Ω entre CAN-H et CAN-L (bus éteint).</li>
+</ol>
+
+<h3>8.3 Connexion Diagnostic avec PCAN-View</h3>
+
+<ol>
+<li>Connecter l'adaptateur OBD-CAN USB au port OBD du banc.</li>
+<li>Connecter l'autre extrémité au port USB du PC.</li>
+<li>Lancer le logiciel PCAN-View sur le PC.</li>
+<li>Sélectionner le canal CAN correspondant à l'adaptateur USB.</li>
+<li>Configurer la vitesse du bus CAN : <strong>500 kbit/s</strong> (standard Audi réseau habitacle).</li>
+<li>Cliquer sur "Connecter" pour ouvrir le bus en écoute passive (mode Rx).</li>
+<li>Vérifier l'apparition des trames dans la fenêtre de réception (liste des IDs actifs).</li>
+<li>Pour démarrer un enregistrement : menu <em>Fichier &gt; Trace &gt; Start</em>,
+choisir un nom de fichier au format <code>TestX.trc</code>.</li>
+</ol>
+
+<h3>8.4 Test des Fonctions d'Éclairage</h3>
+
+<p>Procédure de test séquentiel des fonctions éclairage :</p>
+
+<ol>
+<li><strong>Veilleuses :</strong> Activer l'interrupteur veilleuses du panneau.
+    Vérifier dans PCAN-View que la trame 0x0390 octet 6 passe à 0x04.</li>
+<li><strong>Feux de croisement :</strong> Tourner le commutateur en position "croisement".
+    Vérifier octet 6 = 0x04 (même bit que veilleuses sur ce banc).</li>
+<li><strong>Antibrouillards :</strong> Activer l'interrupteur antibrouillard.
+    Vérifier octet 6 = 0x02 ou 0x06 (selon veilleuses allumées ou non).</li>
+<li><strong>Clignotant Gauche :</strong> Actionner le levier de clignotant à gauche.
+    Vérifier octet 4 = 0x04 dans la trame 0x0390.</li>
+<li><strong>Clignotant Droit :</strong> Actionner le levier à droite.
+    Vérifier octet 4 = 0x08.</li>
+<li><strong>Warning :</strong> Appuyer sur le bouton de détresse.
+    Vérifier octet 4 = 0x0C.</li>
+<li><strong>Feux Stop :</strong> Appuyer sur la pédale de frein.
+    Vérifier octet 4 bit 6 = 1 (0x40) dans la trame 0x0390.</li>
+<li><strong>Marche arrière :</strong> Engager la marche arrière sur le sélecteur.
+    Vérifier octet 3 = 0x10 dans la trame 0x0390.</li>
+</ol>
+
+<h3>8.5 Simulation de Défauts</h3>
+
+<p>Pour simuler les défauts décrits en Section 6 :</p>
+
+<ol>
+<li><strong>Rupture bus :</strong> Débrancher le connecteur CAN entre deux modules pendant
+    l'enregistrement. Observer le silence dans PCAN-View, puis rebrancher et constater
+    la reprise automatique.</li>
+<li><strong>ECU absent :</strong> Retirer l'alimentation d'un calculateur (interrupteur dédié
+    sur le banc). Les trames de cet ECU disparaissent de la liste PCAN-View.
+    Le reste du réseau continue à fonctionner normalement (architecture multi-maître CAN).</li>
+<li><strong>Défaut alimentation :</strong> Couper puis rétablir l'alimentation générale.
+    Observer la séquence de redémarrage des calculateurs dans PCAN-View.</li>
+</ol>
+
+<h3>8.6 Arrêt du Banc</h3>
+
+<ol>
+<li>Arrêter l'enregistrement dans PCAN-View (menu <em>Fichier &gt; Trace &gt; Stop</em>).</li>
+<li>Sauvegarder le fichier .trc si nécessaire.</li>
+<li>Fermer le logiciel PCAN-View.</li>
+<li>Déconnecter l'adaptateur OBD-USB du port OBD.</li>
+<li>Éteindre toutes les fonctions actives sur le panneau (éclairage, clignotants).</li>
+<li>Couper l'alimentation générale du banc via l'interrupteur principal.</li>
+<li>Laisser le banc se décharger 30 secondes avant de déconnecter les câbles.</li>
+</ol>
+
+<h3>8.7 Précautions de Sécurité</h3>
+
+<ul>
+<li>Ne jamais court-circuiter les bornes CAN-H et CAN-L directement.</li>
+<li>Ne pas brancher ou débrancher l'adaptateur OBD sous tension lors d'un enregistrement actif.</li>
+<li>Respecter la polarité de l'alimentation 12V du banc.</li>
+<li>En cas de comportement anormal (fumée, odeur, surchauffe), couper immédiatement
+    l'alimentation.</li>
+</ul>
+
 </body >
 </html >
