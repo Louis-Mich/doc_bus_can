@@ -16,7 +16,7 @@ LOUIS MICHELOT<br>
 
  <center><h2> Feature </h2></center>
 
-    <h1>Question 1</h1>
+    <h1>Section 1 </h1>
     <h2> - Description générale du banc</h2>
     <p>
         La maquette éclairage est le fruit d’un développement commun entre Audi et LD Didactique, ce banc d’expérimentation permet de mener différents tests que ce soit sur le tableau de bord, le système central ou le système électronique. Ce banc met en avant les principes de base de l’électronique des véhicules et des systèmes de bus de données modernes (LIN et Bus CAN). Tout d’abord nous pouvons constater le système d’éclairage, nous avons dans la partie haute les feux de croisement, les feux de route et les clignotants orange, dans la partie basse nous avons les feux de position, de recul, de stop et les clignotants.
@@ -334,6 +334,51 @@ Le J285 est un calculateur qui peut être représenté comme une plaque tournant
 •	De l’antidémarrage, sur de nombreuses générations ce dernier est installé à l’intérieur du J285. Il permet à la voiture de s’éteindre si cette dernière ne reconnait pas la clé.<br>
 
 </p>
+
+
+ <h1>Section 4</h1>
+    <p>
+        Rappel bref mais concis des éléments théoriques CAN: CAN-H/CAN-L, signal différentiel, bit
+        dominant/récessif, arbitrage, trame standard (CAN 2.0A), trame étendue (CAN 2.0B), détection
+        d'erreurs. Faites des illustrations significatives.
+    </p>
+
+    <h2> - CAN : </h2>
+    <p>
+        Il s'agit d'un bus de données normalisé avec ISO 11898, cellui-ci permet de mettre en application le multiplexage qui
+        consiste à raccorder à un même cable un grand nombre de calculateurs qui communiqueront à tour de rôle.
+        Il 'agit d'un réseau de données utilisant une seule ligne de transmission de données.
+    </p>
+
+    <h2> - CAN-H/CAN-L :</h2>
+    <p>
+        Paire de fils torsadés : tous les appareils connectés au bus sont appelés Unités de Contrôle Électronique (ECU) ou de nœuds.
+        Ces CAN permettent la une comunication en utilisant deux fils : CAN HIGH et CAN LOW, ils sont representé par la norme ISO 11898-1
+        pour la coche de liaison de données et ISO 11898-2 pour la couche physique.
+    </p>
+
+    <h2> - Signal différentiel :</h2>
+    <p>Il s’agit d’une méthode de transmission de signal électrique dans laquelle l’information est la différence entre les signaux transmis sur deux lignes. </p>
+
+    <h2> - Bit dominant / bit récessif :</h2>
+    <p>Les spécifications CAN utilisent les termes bits dominants et bits récessifs : le bit dominant est à l’état logique 0 (activé par l’émetteur) et le bit récessif est à l’état logique 1 (ramené passivement à l’état bas par une résistance). L’état de repos est représenté par le niveau récessif (1 logique).</p>
+
+    <h2> - Arbitrage : </h2>
+    <p>Champ d’arbitrage composé de 11 bits d’identification pour CAN 2.0A et 29 bits pour CAN 2.0B suivi par le bit RTR (Remote Transmission Request), ce champ sert d’identification pour la donnée transportée dans le champ de données.</p>
+
+    <h2> - CAN 2.0A :</h2>
+    <p>CAN2.0A prend en charge le format de trame standard. La longueur de l'identifiant de ce format est de 11 bits et convient aux scénarios d'application qui ne nécessitent pas un grand nombre de nœuds ou des structures de réseau complexes.</p>
+
+    <h2> - CAN 2.0B :</h2>
+    <p>En plus de prendre en charge le format de trame standard, CAN2.0B introduit également le format de trame étendu, dont la longueur d'identifiant est augmentée à 29 bits, ce qui augmente considérablement le nombre de nœuds adressables et la diversité des données dans le réseau, ce qui résout le problème de ressources d'identifiant insuffisantes pouvant exister dans le réseau CAN.</p>
+
+    <h2> - Détection d'erreurs : </h2>
+    <p>
+        Une trame d’erreur est constituée de deux parties. La première est formée par la superposition des différents ”Error flags” mis par les nœuds du bus. La seconde partie est un délimiteur.
+        Un nœud qui détecte une erreur la signale en envoyant un Error flag.
+        Celui-ci viole la règle du bit stuffing (6 bits dominants consécutifs) et par conséquent, tous les autres nœuds détectent aussi une erreur et commencent à envoyer un Error flag.
+        La séquence de bits dominants qui existe alors sur le bus est le résultat de la superposition de plusieurs Error flags, et sa longueur varie entre 6 et 12 bits. Il existe deux types d’Error flags  ensuite nous avons la vérification de la Form Error qui surveille les délimiteurs de trame et finalement il y a l'ACK Error qui lui valide qu'au moins un récepteur a bien acquitté la donnée.
+    </p>
 
     <h1>Section 5 : Systèmes Véhicule - Description Fonctionnelle</h1>
 
