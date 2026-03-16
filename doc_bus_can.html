@@ -14,6 +14,40 @@ LOUIS MICHELOT<br>
 <h1 class="titre-centre"> Compte rendu Culture métier </h1>
 
 
+ <center><h2> Feature </h2></center>
+
+    <h1>Question 1</h1>
+    <h2> - Description générale du banc</h2>
+    <p>
+        La maquette éclairage est le fruit d’un développement commun entre Audi et LD Didactique, ce banc d’expérimentation permet de mener différents tests que ce soit sur le tableau de bord, le système central ou le système électronique. Ce banc met en avant les principes de base de l’électronique des véhicules et des systèmes de bus de données modernes (LIN et Bus CAN). Tout d’abord nous pouvons constater le système d’éclairage, nous avons dans la partie haute les feux de croisement, les feux de route et les clignotants orange, dans la partie basse nous avons les feux de position, de recul, de stop et les clignotants.
+        Au centre on peut remarquer les éléments de contrôle du véhicule c’est-à-dire le volant, le tableau de bord et les commutateurs pour l’éclairage et les butons de réglage des rétroviseurs.
+        Les calculateurs sont montés en façade ceux-ci permettent de gérer les protocoles de communications comme le bus CAN ou le bus LIN.
+    </p>
+
+    <h2> - Topologie globale du réseau automobile (CAN/LIN) </h2>
+    <p>Dans un véhicule moderne, plusieurs réseaux de communication permettent aux calculateurs d’échanger des informations. 
+    Sur ce banc, deux réseaux principaux sont utilisés : le réseau CAN et le réseau LIN. 
+    Le réseau CAN est un bus de communication rapide permettant la transmission de données entre plusieurs calculateurs de manière fiable.
+    Le réseau LIN, plus simple et moins coûteux, est utilisé pour les fonctions secondaires nécessitant moins de débit. 
+    Les deux réseaux travaillent ensemble afin d’assurer la communication entre les différents systèmes du véhicule.
+    Cette organisation permet de répartir les fonctions selon leur niveau de complexité et de criticité.</p>
+
+    <h2> - Topologie du réseau habitacle (Convenience Electronics)    </h2>
+    <p>Le réseau habitacle, appelé Convenience Electronics, regroupe les fonctions liées au confort et aux équipements du véhicule. 
+    Il comprend notamment les systèmes d’éclairage, les commandes du tableau de bord, les essuie-glaces et certains capteurs. 
+    Dans cette architecture, un calculateur principal coordonne le fonctionnement global du système.
+    D’autres calculateurs secondaires contrôlent des éléments spécifiques et échangent des informations via le réseau CAN.
+    Certains dispositifs simples peuvent être connectés via le réseau LIN, qui est piloté par un calculateur maître. 
+    Cette organisation hiérarchique permet de simplifier la gestion des différents équipements du véhicule.</p>
+    <h2> - Architecture spécifique du réseau du banc d’essai</h2>
+    <p>Le banc d’essai reproduit une architecture simplifiée du réseau habitacle d’un véhicule réel.
+    Plusieurs calculateurs sont reliés entre eux par un bus CAN principal qui permet la communication entre les différents modules.
+    Certains capteurs et actionneurs sont connectés à ces calculateurs afin de simuler le fonctionnement réel des équipements du véhicule.
+    Le système intègre également une interface de diagnostic via la prise OBD permettant d’analyser le réseau avec un ordinateur. 
+    Cette architecture permet d’observer les trames de communication et de simuler différents défauts. 
+    Le banc constitue ainsi un outil pédagogique pour comprendre le fonctionnement et le diagnostic des réseaux automobiles.</p>
+
+
 <h1>Matériel et Logiciels du Banc</h1>
 
     <h2>1. OBD CAN + USB Adapter (Interface HEX-V2 / HEX-NET)</h2>
@@ -157,11 +191,9 @@ LOUIS MICHELOT<br>
         <img src="LIN-Bus_PC_Interface_USB.png" alt="Schéma du système d'éclairage" width="600">
     </div>
 
-PARTIE CALCULATEUR QUESTION 5 
-
 <h1>Documenter les calculateurs suivant : J519, J527, J471, J285 et J393.</h1>
 
-<h2>Détails des calculateurs</h2>
+<h2>Section 3 : Détails des calculateurs</h2>
 
 <h3 ><u>Calculateur J519 </u>  </h3>
 <p> 
@@ -303,12 +335,7 @@ Le J285 est un calculateur qui peut être représenté comme une plaque tournant
 
 </p>
 
-
- <title>Systèmes Véhicule - Description Fonctionnelle</title>
-</head>
-
-
-    <h1>Systèmes Véhicule - Description Fonctionnelle</h1>
+    <h1>Section 5 : Systèmes Véhicule - Description Fonctionnelle</h1>
 
     <h2>1. Systèmes d'éclairage (Lighting System I et II)</h2>
 
@@ -549,8 +576,6 @@ Le J285 est un calculateur qui peut être représenté comme une plaque tournant
 <body>
 
 <h1>Documentation Technique - Banc Leybold Audi A3</h1>
-<p><strong>UFR Sciences et Technologies - Université Évry Paris-Saclay</strong><br>
-Cours : Culture Métiers - L. NEHAOUA - 2025-2026<br></p>
 
 <hr>
 
