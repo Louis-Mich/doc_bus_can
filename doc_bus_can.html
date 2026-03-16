@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html >
+<head >
+<title > doc_bus_can </title >
+</head >
+<body >
+
+RAYAN ABDELFETTAH <br>
+THIBAULT DEGOUSSE<br>
+MIGUEL SANTOS<br>
+LOUIS MICHELOT<br>
+</br>
+
+<h1 class="titre-centre"> Compte rendu Culture métier </h1>
+
+
+<h1>Matériel et Logiciels du Banc</h1>
+
+    <h2>1. OBD CAN + USB Adapter (Interface HEX-V2 / HEX-NET)</h2>
+
+    <h3>- Fonction :</h3>
+    <p>
+        Sert de passerelle intelligente entre le réseau de bord du véhicule (CAN Haute Vitesse ou Basse Vitesse)
+        et le protocole USB d'un PC. Il ne se contente pas de relier les fils, il gère la synchronisation des messages.
+    </p>
+
+
+    <h3>- Type de communication :</h3>
+    <p>Multiprotocole (ISO 15765-4 CAN, ISO 9141-2, KWP2000). Supporte le mode "Dual CAN" pour interroger les différents réseaux de la maquette.</p>
+
+    <h3>- Données manipulées :</h3>
+    <ul>
+        <li>Requêtes de diagnostic (SID)</li>
+        <li>Lectures de mémoires mortes (ROM)</li>
+        <li>Identification matérielle/logicielle des calculateurs</li>
+        <li>Trames d'acquittement</li>
+    </ul>
+
+    <h3>- Utilisation dans le banc :</h3>
+    <p>
+        C'est l'outil "clé en main" pour le technicien. Sans lui, aucune communication avec le logiciel VCDS n'est possible
+        pour diagnostiquer les pannes injectées.
+    </p>
+    <h3>- Schéma :</h3>
+    <div style="text-align: center;">
+        <img src="OBD_CAN+USB.png" alt="Schéma du système d'éclairage" width="600">
+    </div>
+
+    <hr>
+
+    <h2>2. Logiciel VCDS (VAG-COM)</h2>
+
+    <h3>- Fonction :</h3>
+    <p>
+        Émulateur d'outil de diagnostic constructeur. Il permet de "discuter" avec chaque calculateur individuellement.
+    </p>
+
+    <h3>- Données manipulées :</h3>
+    <ul>
+        <li>DTC (Diagnostic Trouble Codes) : Ex: 01331 (Module de porte sans communication)</li>
+        <li>Groupes de mesures : Température, tension de borne 30, état binaire des boutons</li>
+        <li>Codage Long : Modification de la configuration binaire (ex: activer les feux de jour)</li>
+    </ul>
+
+    <h3>- Utilisation dans le banc :</h3>
+    <p>
+        Utilisé pour le TP "Eigendiagnose". Vérifie si le calculateur J519 détecte correctement l'appui sur une pédale ou un bouton,
+        et efface les pannes après réparation.
+    </p>
+
+    <hr>
+
+    <h2>3. Sensor-CASSY 2 (Le "Cerveau" de mesure)</h2>
+
+    <h3>- Fonction :</h3>
+    <p>
+        Système d'acquisition de données à haute vitesse, agissant comme un oscilloscope et un multimètre graphique.
+    </p>
+
+
+    <h3>- Type de communication :</h3>
+    <p>Échantillonnage analogique jusqu'à 1 MHz.</p>
+
+    <h3>- Données manipulées :</h3>
+    <p>
+        Signaux électriques bruts. On y voit la différence de tension entre CAN-High (3.5V en récessif)
+        et CAN-Low (1.5V en dominant) pour le bus propulsion.
+    </p>
+
+    <h3>- Utilisation dans le banc :</h3>
+    <p>
+        Crucial pour visualiser les pannes physiques (Pannes 8, 9, 10 : courts-circuits au + ou à la masse).
+        On voit la forme du signal se déformer ou s'aplatir à l'écran.
+    </p>
+
+    <h3>- Schéma :</h3>
+    <div style="text-align: center;">
+        <img src="Logiciel_VCDS.png" alt="Schéma du système d'éclairage" width="600">
+    </div>
+
+    <hr>
+
+    <h2>4. CAN-Databus-Multi-Adapter (Interface PEAK-CAN)</h2>
+
+    <h3>- Fonction :</h3>
+    <p>
+        Analyseur de protocole réseau pur. Contrairement au VCDS qui pose des questions, cet outil "écoute" tout ce qui se dit sur le bus sans interruption.
+    </p>
+
+    <h3>- Type de communication :</h3>
+    <p>CAN 2.0A et 2.0B.</p>
+
+    <h3>- Données manipulées :</h3>
+    <ul>
+        <li>ID (Identifiant) : Priorité du message</li>
+        <li>DLC : Nombre d'octets de données</li>
+        <li>DATA : Les 8 octets de données brutes contenant les informations d'éclairage ou de capteurs</li>
+    </ul>
+
+    <h3>- Utilisation dans le banc :</h3>
+    <p>
+        Étude de la logique binaire. Par exemple, voir l'octet 3 du message ID 531h changer de valeur passant de 00 à 01 lorsqu'on active le clignotant.
+    </p>
+
+    <h3>- Schéma :</h3>
+    <div style="text-align: center;">
+        <img src="CAN-Databus-Multi-Adapter.png" alt="Schéma du système d'éclairage" width="600">
+    </div>
+
+    <hr>
+
+    <h2>5. LIN-Bus PC Interface USB</h2>
+
+    <h3>- Fonction :</h3>
+    <p>
+        Interface spécifique pour les réseaux secondaires (plus lents et moins chers que le CAN).
+    </p>
+
+
+
+    <h3>- Type de communication :</h3>
+    <p>
+        Maître/Esclave (Master/Slave). Sur le banc, le J393 est le maître et l'E415 (Neiman) est l'esclave.
+    </p>
+
+    <h3>- Données manipulées :</h3>
+    <p>Trame de 13 bits (Header) suivie de 1 à 8 octets de données.</p>
+
+    <h3>- Utilisation dans le banc :</h3>
+    <p>
+        Utilisé pour démontrer comment une commande simple (comme l'insertion d'une clé dans le Neiman)
+        est transmise au calculateur principal via un fil unique.
+    </p>
+
+    <h3>- Schéma :</h3>
+    <div style="text-align: center;">
+        <img src="LIN-Bus_PC_Interface_USB.png" alt="Schéma du système d'éclairage" width="600">
+    </div>
+
+PARTIE CALCULATEUR QUESTION 5 
+
+<h1>Documenter les calculateurs suivant : J519, J527, J471, J285 et J393.</h1>
+
+<h2>Détails des calculateurs</h2>
+
+<h3 ><u>Calculateur J519 </u>  </h3>
+<p> 
+
+<center><img src="J519.jpg" alt="J519" width="400"></center>
+<br>   
+
+<br> 
+
+Le J519 est le  calculateur de réseau de bord, c'est un élément essentiel pour le véhicule car il met en relation différents éléments : 
+<br> 
+
+<center><img src="Mutliplexage_J519.jpg" alt="J519_1" width="400"></center>
+
+<br> 
+
+Il met donc en relation des capteurs et des calculateurs sur le véhicule comme le calculateru J530, la commande d'éclairage, le calculateur J400, le capteur de qualité d'air mais aussi le détecteur de pluie.
+
+<br> 
+<br> 
+Il a également pour objectif d’administrer tout ce qui consomme du courant mais qui n'est pas lié directement au moteur, notamment : <br>
+<br> 
+•	L’éclairage extérieur avec les feux de croisement, les pleins phares, les clignotants et les feux de jour <br>
+•	L’éclairage intérieur avec les plafonniers, et l’éclairage des pieds et du coffre.<br>
+•	La surveillance qui envoie un message au tableau de bord si une ampoule est grillée en mesurant la résistance du circuit par exemple.<br>
+•	La modulation de largeur d'impulsion, qui peut faire varier l'intensité des ampoules en fonction de la lumière extérieur notamment.<br>
+<br>
+Le calculateur J519 reçoit les ordres des commodos et active les accessoires correspondants :<br>
+<br>
+•	Aux essuie-glaces et lave-glace en modifiant les vitesses de balayage et l'intermittence.<br>
+•	Au dégivrage en activant la lunette arrière thermique et des rétroviseurs dégivrants.<br>
+•	Au klaxon qui interprète l'appui sur le volant.<br>
+ </p>
+
+
+<h3 > <u>Calculateur J393 </u></h3>
+
+<p>
+
+<center><img src="J393.jpg" alt="J393" width="400"></center>
+
+<br>
+
+Le J393 est le calculateur central de système confortl il est responsable du verrouillage et de la zone arrière du véhicule. Comme le J519 il met
+en relation divers calculateurs et capteurs comme le J764, le J245 ou encore le détecteur d'alarme antivlo G578.
+<br>
+<br>
+
+<center><img src="J393(1).jpg" alt="J393" width="400"> </center>
+
+<br>
+
+Le J393 est le responsable du verrouillage et de la zone arrière du véhicule, parmis ses tâches globales on retrouve : <br>
+<br>
+
+<br>
+• Verrouillage électrique de colonne de direction <br>
+• Contact démarreur électronique (EZS) et fonctions correspondantes<br>
+• Verrouillage centralisé<br>
+• Advanced Key<br>
+• Pilotage de l’éclairage du véhicule<br>
+• Alarme antivol (DWA)<br>
+• Toit relevable panoramique<br>
+• Lecture d’informations<br>
+• Pilotage des relais<br>
+• Fonctions de sécurité<br>
+• Diagnostic<br>
+
+<br>
+
+Il est en charge de diverses fonctions sur le véhicule, dont font partie : 
+<br>
+
+<br>
+
+•	Du verrouillage centralisé, il s’occupe de la gestion de l'ouverture et la fermeture des portes, ainsi que la trappe à carburant.<br>
+•	De l’accès sans clé, qui communique avec les antennes de votre clé pour autoriser l’ouverture de la porte ou démarrer sans insérer la clé.<br>
+•	De la gestion du coffre qui commande de la serrure du hayon et l'ouverture électrique motorisée pour les véhicules qui en sont équipés.<br>
+•	De l’éclairage arrière, qui pilote les feux stop, les veilleuses arrière et les clignotants arrière.<br>
+•	De l’alarme qui gère les capteurs volumétriques et la sirène d'alarme d'origine.<br>
+•	Du dégivrage et du rideau qui commande souvent le dégivrage arrière et le rideau pare-soleil électrique.<br>
+
+<br>
+
+</p>
+
+<h3 > <u>Calculateur J527</u>  </h3>
+
+<p>
+
+<center><img src="J527.jpg" alt="J393" width="400"> </center>
+
+<br>
+
+Le J527 est le centre de toutes les commandes qui se trouvent au niveau du volant.  Il joue donc le rôle d’interface, entre le conducteur et le réseau CAN-Bus du véhicule. Il permet de d’optimiser la gestion de : <br>
+<br>
+	Des commodos qui comprennent, notamment les clignotants, appels de phares, le régulateur de vitesse et les essuie-glaces.<br>
+•	Du volant multifonction qui traduit les pressions sur les boutons du volant en messages numériques.<br>
+•	Du capteur d'angle de braquage, qui héberge ou transmet l'information sur la position précise du volant.<br>
+•	Du klaxon et l'airbag en assurant la liaison électrique pour que l'airbag puisse se déclencher et que le klaxon fonctionne à tout moment.<br>
+•	Du Neiman électronique qui participe à la reconnaissance de la clé et au déverrouillage de la colonne.<br>
+<br>
+
+Il est en charge nottament : de l'éclairage, de la visibilité, du confort, de la gestion de l'énergie, passerelle <br>
+
+
+</p>
+
+<h3 > <u> Calculateur J471</u>  </h3 >
+
+
+
+<center><img src="J427.jpg" alt="J393" width="400"> </center>
+
+<p>
+
+Le J471 est un calculateur beaucoup plus spécifique, il est principalement présent sur les véhicules luxueux du groupe Volkswagen mais aussi sur certains modèles de la plateforme Touareg. Il administre l'interface homme-machine du véhicule, en participant à la communication entre les doigts et les écrans de bord. Il a notamment la charge de :<br>
+<br>
+•	La centralisation des commandes en recevant les signaux des boutons de la console centrale.<br>
+•	L’affichage en pilotant l'envoi des informations vers l'écran central ou le combiné d'instruments.<br>
+•	La gestion du multimédia, en effet, il fait le pont entre les systèmes audio, la navigation, le téléphone et le réglage des paramètres du véhicule comme les suspensions par exemple.<br>
+•	La passerelle d'information qui traduit les entrées utilisateur en ordres compréhensibles pour les autres réseaux CAN du véhicule.<br>
+
+
+</p>
+
+<h3 >  <u>Calculateur J285</u>  </h3 >
+
+<center><img src="J285.jpg" alt="J393" width="400"> </center>
+    
+<p>
+
+Le J285 est un calculateur qui peut être représenté comme une plaque tournante d'informations sur le véhicule, il a notamment la charge :<br>
+<br>
+•	D’afficher des données vitales pour le véhicule comme : la vitesse, le régime moteur, température de liquide de refroidissement ou encore le niveau de carburant.<br>
+•	De la gestion des voyants en allumant les témoins d'alerte comme l’ABS, les Airbags, l’Huile Moteur, en fonction des messages qu'il reçoit des autres calculateurs via le réseau CAN-Bus.<br>
+•	De l’ordinateur de bord avec notamment la consommation moyenne, l’autonomie du véhicule, la température extérieure et l’indicateur de maintenance.<br>
+•	De l’antidémarrage, sur de nombreuses générations ce dernier est installé à l’intérieur du J285. Il permet à la voiture de s’éteindre si cette dernière ne reconnait pas la clé.<br>
+
+</p>
+
+
+ <title>Systèmes Véhicule - Description Fonctionnelle</title>
+</head>
+
+
+    <h1>Systèmes Véhicule - Description Fonctionnelle</h1>
+
+    <h2>1. Systèmes d'éclairage (Lighting System I et II)</h2>
+
+    <p>
+        Le système d'éclairage est géré principalement par le
+        <strong>Calculateur de réseau de bord (J519)</strong> et
+        l'<strong>électronique de colonne de direction (J527)</strong>.
+    </p>
+
+    <h3> - Fonction : </h3>
+    <p>
+        Commande des feux de position, de croisement, de route et des clignotants.
+    </p>
+
+    <h3>- Messages CAN :</h3>
+    <ul>
+        <li><strong>2C1h</strong> : Envoyé par le J527 toutes les 100 ms pour indiquer l'état des commutateurs de phares/clignotants.</li>
+        <li><strong>531h</strong> : Etat du J519 envoyé toutes les 50 ms.</li>
+        <li><strong>631h</strong> : Message d'état secondaire envoyé par le J519 (intervalle d'1 s).</li>
+    </ul>
+
+    <h3>- Interaction ECU :</h3>
+    <p>
+        Le commutateur d'éclairage (E1) informe le J519.
+        Le J519 pilote ensuite les feux en filaire ou via CAN pour les modules distants.
+    </p>
+
+    <h3>- Modes de fonctionnement :</h3>
+    <ul>
+        <li><strong>Normal</strong> : Allumage immédiat des feux dès réception du message CAN valide.</li>
+        <li>
+            <strong>Défaut</strong> : En cas d'interruption de ligne ou court-circuit
+            (ex : Défaut F2 pour clignotant gauche), un code d'erreur est mémorisé dans le J519.
+        </li>
+        <li>
+            <strong>Correction</strong> : Effacer les codes d'erreur dans les unités 09 (Centrale électrique)
+            et 46 (Confort) après réparation physique.
+        </li>
+    </ul>
+
+    <h3>- Schèma d'interaction :</h3>
+
+    <svg width="900" height="260" xmlns="http://www.w3.org/2000/svg">
+
+        <!-- Bo�tes -->
+        <rect x="40" y="40" width="180" height="60" fill="none" stroke="black" />
+        <rect x="40" y="140" width="180" height="60" fill="none" stroke="black" />
+
+        <rect x="300" y="90" width="220" height="70" fill="none" stroke="black" />
+
+        <rect x="600" y="90" width="220" height="70" fill="none" stroke="black" />
+
+        <rect x="600" y="190" width="220" height="60" fill="none" stroke="black" />
+
+        <!-- Textes -->
+        <text x="130" y="75" text-anchor="middle">Contact démarreur</text>
+        <text x="130" y="95" text-anchor="middle">D (Neiman)</text>
+
+        <text x="130" y="175" text-anchor="middle">Commande clignotants</text>
+        <text x="130" y="195" text-anchor="middle">E2</text>
+
+        <text x="410" y="120" text-anchor="middle">J527</text>
+        <text x="410" y="140" text-anchor="middle">Colonne de direction</text>
+
+        <text x="710" y="120" text-anchor="middle">J519</text>
+        <text x="710" y="140" text-anchor="middle">Réseau de bord</text>
+
+        <text x="710" y="225" text-anchor="middle">J533</text>
+        <text x="710" y="245" text-anchor="middle">Passerelle CAN / Diagnostic</text>
+
+        <!-- Flèches -->
+        <line x1="220" y1="70" x2="300" y2="110" stroke="black" />
+        <polygon points="300,110 292,105 292,115" fill="black" />
+
+        <line x1="220" y1="170" x2="300" y2="130" stroke="black" />
+        <polygon points="300,130 292,125 292,135" fill="black" />
+
+        <line x1="520" y1="125" x2="600" y2="125" stroke="black" />
+        <polygon points="600,125 592,120 592,130" fill="black" />
+
+        <line x1="710" y1="160" x2="710" y2="190" stroke="black" />
+        <polygon points="710,190 705,182 715,182" fill="black" />
+
+        <!-- Texte CAN -->
+        <text x="560" y="110" text-anchor="middle">CAN Confort</text>
+        <text x="560" y="125" text-anchor="middle">High / Low</text>
+
+    </svg>
+
+
+
+
+
+
+
+    <h2>2. Moteur essuie-glace :</h2>
+
+    <h3>- Fonction :</h3>
+    <p>
+        Nettoyage du pare-brise selon plusieurs vitesses et intermittence.
+    </p>
+
+    <h3>- Messages CAN :</h3>
+    <p>
+        Les commandes proviennent du J527 (commodo d'essuie-glace) vers le J519 via le bus CAN Confort.
+    </p>
+
+    <h3>- Interaction ECU :</h3>
+    <p>
+        Le J527 lit la position du levier et envoie l'information au J519,
+        qui pilote le moteur d'essuie-glace.
+    </p>
+
+    <h3>- Modes de fonctionnement :</h3>
+    <ul>
+        <li><strong>Normal</strong> : Balayage synchronisé avec la commande.</li>
+        <li>
+            <strong>Défaut</strong> : Défaut F4 (interruption de la ligne de masse).
+            Le système peut se mettre en mode dégradé (vitesse unique) ou s'arrêter.
+        </li>
+        <li>
+            <strong>Correction</strong> : Vérification de la continuité de la ligne de masse
+            et du câblage moteur.
+        </li>
+    </ul>
+
+    <h3>- Schéma d'interaction :</h3>
+
+    <div style="text-align: center;">
+        <img src="iss_glace.png" alt="Schéma du système d'éclairage" width="600">
+    </div>
+
+    <h2>3. Interrupteur de marche arrière :</h2>
+
+    <h3>- Fonction :</h3>
+    <p>
+        Activer les feux de recul et informer les systèmes d'aide au stationnement.
+    </p>
+
+    <h3>- Interaction ECU :</h3>
+    <p>
+        Le signal de l'interrupteur est généralement lu par le calculateur de boite
+        ou le J519, puis diffusé sur le bus CAN.
+    </p>
+
+    <h3>- Modes de fonctionnement :</h3>
+    <ul>
+        <li><strong>Normal</strong> : Allumage des feux de recul dès l'engagement de la marche arrière.</li>
+        <li><strong>Défaut</strong> : Défaut F6 (interruption de la ligne positive vers la prise remorque/feux).</li>
+        <li><strong>Correction</strong> : Contrôle du fusible et de l'interrupteur sur la boîte de vitesses.</li>
+    </ul>
+
+    <h3>- Schèma d'interaction :</h3>
+    <div style="text-align: center;">
+        <img src="Interrupteur_schema.jpg" alt="Schéma du système d'éclairage" width="600">
+    </div>
+
+
+
+
+    <h2>4. Contact / Neiman (E415) :</h2>
+
+    <h3>- Fonction :</h3>
+    <p>
+        Identification de la clé et autorisation de démarrage.
+    </p>
+
+    <h3>- Interaction ECU :</h3>
+    <p>
+        Le module E415 posséde des microcontacteurs (contact S, clé enfoncée)
+        lus par le Calculateur central de confort (J393).
+    </p>
+
+    <h3>- Interaction Bus :</h3>
+    <p>
+        Le J393 communique avec le J533 (Passerelle) pour transmettre l'état
+        des bornes (15, 50, X) aux autres calculateurs via les bus CAN Propulsion
+        et Confort.
+    </p>
+
+    <h3>- Modes de fonctionnement :</h3>
+    <ul>
+        <li>
+            <strong>Normal</strong> : Déverrouillage électrique de la colonne de direction (J764)
+            après lecture de la puce de la clé via une bobine LIN.
+        </li>
+        <li>
+            <strong>Défaut</strong> : Bobine de lecture (01128) défectueuse ou défaut de communication
+            avec le J393.
+        </li>
+        <li>
+            <strong>Correction</strong> : Diagnostic via le bloc de valeurs mesurées
+            et vérification du bus LIN entre E415 et J393.
+        </li>
+    </ul>
+
+    <h3>- Schèma d'interaction :</h3>
+    <div style="text-align: center;">
+        <img src="Contact-N.png" alt="Schéma du système d'éclairage" width="600">
+    </div>
+
+    <h2>5. Feux de détresse :</h2>
+
+    <h3>- Fonction :</h3>
+    <p>
+        Signalisation d'urgence par clignotement simultané
+        de tous les indicateurs de direction.
+    </p>
+
+    <h3>- Interaction ECU :</h3>
+    <p>
+        L'interrupteur de feux de détresse est relié directement au J519.
+        Le J519 commande ensuite les clignotants et envoie un message sur le bus CAN
+        pour confirmer l'état au combiné d'instruments (J285).
+    </p>
+
+    <h3>- Modes de fonctionnement :</h3>
+    <ul>
+        <li><strong>Normal</strong> : Clignotement prioritaire sur les autres fonctions d'éclairage.</li>
+        <li>
+            <strong>Défaut</strong> : Si le bus CAN Confort est défaillant,
+            les feux de détresse peuvent rester opérationnels en mode secours local via le J519.
+        </li>
+        <li>
+            <strong>Correction</strong> : Remplacement de l'interrupteur
+            ou vérification du câblage vers le J519.
+        </li>
+    </ul>
+
+    <h3>- Schèma d'interaction :</h3>
+    <div style="text-align: center;">
+        <img src="feux_detresse.png" alt="Schéma du système d'éclairage" width="600">
+    </div>
+
+</body >
+</html >
